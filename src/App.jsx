@@ -1,59 +1,47 @@
-import { produce } from "immer"; // Import `produce` for managing immutable updates
-import { useState } from "react"; // Import `useState` for state management in React
-
-// Initial object with nested properties
-let obj = {
-  name: "Dulitha",
-  age: 23,
-  address: {
-    add1: "saliyapura",
-    add2: "anuradhapura",
-  },
-};
-
-// Initial array
-let arry = [1, 2, 3, 4, 5, 6];
-
-// Create an immutable copy of the object using `immer`
-const objCopy = produce(obj, (copy) => {
-  copy.address.add1 = "katupuliyankulama"; // Update `add1` property in the copied object
-});
-
-// Create an immutable copy of the array using `immer`
-const arryCopy = produce(arry, (copy) => {
-  copy[2] = { name: "Dulitha" }; // Replace the third element (index 2) with a new object
-});
+import { useDispatch, useSelector } from "react-redux";
+import { selectLaptop } from "./Store/Reducer/laptopSlice";
+import { selectCart, addToCart } from "./Store/Reducer/cartSlice";
 
 const App = () => {
-  // Manage state using `useState`, initializing `test` as a shallow copy of `obj`
-  const [test, setTest] = useState({ ...obj });
+  // Retrieve the list of laptops from Redux store
+  const laptops = useSelector(selectLaptop);
 
-  // Event handler for updating state immutably
-  const handleClick = () => {
-    setTest(
-      produce((copy) => {
-        copy.address.add2 = "parasangaswewa"; // Update `add2` property in the copied state
-      })
-    );
-  };
+  // Retrieve the cart items from Redux store
+  const cart = useSelector(selectCart);
 
-  // Console logs to observe how values change
-  console.log("obj", obj); // Logs the original object
-  console.log("objCopy", objCopy); // Logs the immutably updated copy of the object
-  console.log(".......................................................");
+  // Get the dispatch function to dispatch actions
+  const dispatch = useDispatch();
 
-  console.log("arry", arry); // Logs the original array
-  console.log("arryCopy", arryCopy); // Logs the immutably updated copy of the array
-  console.log(".......................................................");
-
-  console.log("test", test); // Logs the current state managed by React
+  // Calculate total price and total cart count dynamically
+  let total = 0;
+  let cartCount = 0;
+  cart.forEach((element) => {
+    total = total + element.count * element.price; // Calculate total price
+    cartCount = cartCount + element.count; // Count total items
+  });
 
   return (
     <div>
-      {/* Button to trigger the state update */}
-      <button onClick={handleClick}>Click</button>
+      {/* Section for displaying available laptops */}
+      <h1>Available Laptops</h1>
+      {laptops.map(({ id, ram, price, cpu }) => (
+        <p key={id}>
+          Price: {price} | CPU: {cpu} | RAM: {ram}{" "}
+          {/* Add laptop to the cart on button click */}
+          <button onClick={() => dispatch(addToCart({ id, price, ram, cpu }))}>
+            Add to Cart
+          </button>
+        </p>
+      ))}
+
+      <hr />
+
+      {/* Section for displaying cart summary */}
+      <h1>Cart</h1>
+      <p>Items in Cart: {cartCount}</p>
+      <p>Total Price: RS. {total}</p>
     </div>
   );
 };
 
-export default App; // Export the component for rendering
+export default App;
