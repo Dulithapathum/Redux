@@ -1,46 +1,43 @@
-import { useDispatch, useSelector } from "react-redux";
-// Import selector and action from the laptop slice
-import { laptopSliceSelecter, addLaptop } from "./Store/Reducers/laptopslice";
-import { useRef } from "react"; // For handling input fields
-import { nanoid } from "@reduxjs/toolkit"; // Generate unique IDs for laptops
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { laptopSliceSelecter, addLaptop } from "./Store/Reducers/laptopslice"; // Import selector and actions
+import { useRef } from "react"; // Use for creating controlled input fields
+import { nanoid } from "@reduxjs/toolkit"; // For generating unique IDs
 
 const App = () => {
   // Get the laptops array from the Redux store
   const laptop = useSelector(laptopSliceSelecter);
 
-  // Set up the dispatch function
+  // Function to dispatch actions
   const dispatch = useDispatch();
 
-  // Create references for input fields
+  // Input field references for capturing user input
   const price = useRef();
   const cpu = useRef();
   const ram = useRef();
   const hdd = useRef();
 
-  // Handle adding a new laptop to the Redux store
+  // Function to handle the Add Laptop form submission
   const addLaptopSubmit = () => {
+    // Dispatch an action to add a new laptop to the Redux store
     dispatch(
-      addLaptop({
-        id: nanoid(), // Generate a unique ID for the new laptop
-        price: price.current.value, // Get price from the input
-        spec: {
-          cpu: cpu.current.value, // Get CPU from the input
-          ram: ram.current.value, // Get RAM from the input
-          hdd: hdd.current.value, // Get HDD from the input
-        },
-      })
+      addLaptop(
+        price.current.value, // Laptop price
+        cpu.current.value, // Laptop CPU specification
+        ram.current.value, // Laptop RAM specification
+        hdd.current.value // Laptop HDD specification
+      )
     );
   };
 
   return (
     <div>
-      {/* Input fields for adding laptop details */}
+      {/* Input fields for adding a new laptop */}
       <input type="text" placeholder="Enter Price" ref={price} />
       <input type="text" placeholder="Enter CPU" ref={cpu} />
       <input type="text" placeholder="Enter RAM" ref={ram} />
       <input type="text" placeholder="Enter HDD" ref={hdd} />
 
-      {/* Button to submit new laptop data */}
+      {/* Button to trigger the Add Laptop action */}
       <button onClick={addLaptopSubmit}>Add Laptop</button>
 
       <hr />

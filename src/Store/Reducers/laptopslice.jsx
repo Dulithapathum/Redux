@@ -3,29 +3,45 @@ import { createSlice, nanoid } from "@reduxjs/toolkit";
 // Define the initial state with one laptop entry
 const initialState = [
   {
-    id: nanoid(),
-    price: "12000", // Default price
+    id: nanoid(), // Unique ID for the initial laptop
+    price: "12000", // Default price for the initial laptop
     spec: {
-      cpu: "i3", // Default CPU
-      ram: "8GB", // Default RAM
-      hdd: "123GB", // Default HDD
+      cpu: "i3", // Default CPU specification
+      ram: "8GB", // Default RAM specification
+      hdd: "123GB", // Default HDD specification
     },
   },
 ];
 
-// Create a slice for laptops
+// Create a slice for managing laptop data in Redux
 const laptopSlice = createSlice({
   name: "laptop", // Name of the slice
-  initialState, // Initial state
+  initialState, // Initial state for the slice
   reducers: {
-    // Add a new laptop to the state
-    addLaptop: (state, action) => {
-      state.push(action.payload); // Append the new laptop to the array
+    // Reducer to add a new laptop to the state
+    addLaptop: {
+      reducer: (state, action) => {
+        state.push(action.payload); // Push new laptop data to the state array
+      },
+      // Function to prepare the action payload
+      prepare: (price, cpu, ram, hdd) => {
+        return {
+          payload: {
+            id: nanoid(), // Generate a unique ID for the new laptop
+            price, // Set the provided price
+            spec: {
+              cpu, // Set the provided CPU specification
+              ram, // Set the provided RAM specification
+              hdd, // Set the provided HDD specification
+            },
+          },
+        };
+      },
     },
   },
 });
 
-// Selector for accessing the laptop slice state
+// Selector for accessing laptop slice state from the Redux store
 export const laptopSliceSelecter = (store) => store.laptopSlice;
 
 // Export action creators and the reducer
