@@ -1,5 +1,8 @@
-// Define an object `obj1`
-let obj1 = {
+import { produce } from "immer"; // Import `produce` for managing immutable updates
+import { useState } from "react"; // Import `useState` for state management in React
+
+// Initial object with nested properties
+let obj = {
   name: "Dulitha",
   age: 23,
   address: {
@@ -8,57 +11,49 @@ let obj1 = {
   },
 };
 
-// Point `objCopy` to the same reference as `obj1`
-let objCopy = obj1;
+// Initial array
+let arry = [1, 2, 3, 4, 5, 6];
 
-// Add a new property `degree` to `objCopy`. Since `objCopy` and `obj1` point to the same object,
-// this change will reflect in `obj1` as well.
-objCopy.degree = "BICT";
+// Create an immutable copy of the object using `immer`
+const objCopy = produce(obj, (copy) => {
+  copy.address.add1 = "katupuliyankulama"; // Update `add1` property in the copied object
+});
 
-console.log("Obj1 =", obj1); // `degree` property added
-console.log("......................................................");
-console.log("ObjCopy =", objCopy); // Same as `obj1`
+// Create an immutable copy of the array using `immer`
+const arryCopy = produce(arry, (copy) => {
+  copy[2] = { name: "Dulitha" }; // Replace the third element (index 2) with a new object
+});
 
-// Create a shallow copy of `obj1` using spread operator and assign to `objCopy`.
-// Now `objCopy` and `obj1` no longer reference the same object.
-objCopy = { ...obj1 };
+const App = () => {
+  // Manage state using `useState`, initializing `test` as a shallow copy of `obj`
+  const [test, setTest] = useState({ ...obj });
 
-// Add a new property `sex` to `objCopy`. This doesn't affect `obj1` since they are separate objects now.
-objCopy.sex = "male";
+  // Event handler for updating state immutably
+  const handleClick = () => {
+    setTest(
+      produce((copy) => {
+        copy.address.add2 = "parasangaswewa"; // Update `add2` property in the copied state
+      })
+    );
+  };
 
-console.log("Obj1 =", obj1); // `degree` remains, no `sex` property added
-console.log("......................................................");
-console.log("ObjCopy =", objCopy); // `sex` added, contains same properties as `obj1`
+  // Console logs to observe how values change
+  console.log("obj", obj); // Logs the original object
+  console.log("objCopy", objCopy); // Logs the immutably updated copy of the object
+  console.log(".......................................................");
 
-// Define another object `obj2`
-let obj2 = {
-  name: "Dulitha",
-  age: 23,
-  address: {
-    add1: "saliyapura",
-    add2: "anuradhapura",
-  },
+  console.log("arry", arry); // Logs the original array
+  console.log("arryCopy", arryCopy); // Logs the immutably updated copy of the array
+  console.log(".......................................................");
+
+  console.log("test", test); // Logs the current state managed by React
+
+  return (
+    <div>
+      {/* Button to trigger the state update */}
+      <button onClick={handleClick}>Click</button>
+    </div>
+  );
 };
 
-// Create a shallow copy of `obj2`, while modifying the `address` property
-// to also be a shallow copy with `add1` updated to a new value.
-let objCopy2 = {
-  ...obj2,
-  address: { ...obj2.address, add1: "katupuliyankulama" }, // Deep copy of `address`
-};
-
-// `objCopy2` has its own copy of `address` with `add1` modified.
-// The original `obj2` remains unchanged.
-console.log("Obj2 =", obj2); // Original address unchanged
-console.log("......................................................");
-console.log("ObjCopy2 =", objCopy2); // Updated address
-
-// Shallow Copy vs Reference:
-// When assigning objCopy = obj1;, both variables reference the same memory location. Changes to objCopy directly affect obj1.
-// Using { ...obj1 } creates a shallow copy, so objCopy and obj1 no longer share the same memory reference.
-
-// Shallow Copy Limitation:
-// Nested objects like address in obj1 are still shared between the original object and its shallow copy. A deep copy is required to create independent nested objects.
-
-// Deep Copy:
-// In objCopy2, a deep copy of address was created using { ...obj2.address }. Thus, changes to objCopy2.address do not affect obj2.address.
+export default App; // Export the component for rendering
