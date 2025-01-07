@@ -1,5 +1,7 @@
 // Import Redux hooks to interact with the store
 import { useDispatch, useSelector } from "react-redux";
+// Import the action creators for increment and decrement
+import { numberDecrement, numberIncrement } from "./Store/Reducer/Number";
 
 function App() {
   // Access the current state value from the Redux store using useSelector
@@ -17,10 +19,7 @@ function App() {
       <button
         onClick={() => {
           // Dispatch an increment action with a payload of 1
-          dispatch({
-            type: "increment",
-            payload: 1,
-          });
+          dispatch(numberIncrement(1));
         }}
       >
         Increment
@@ -30,10 +29,7 @@ function App() {
       <button
         onClick={() => {
           // Dispatch a decrement action with a payload of 1
-          dispatch({
-            type: "decrement",
-            payload: 1,
-          });
+          dispatch(numberDecrement(1));
         }}
       >
         Decrement
