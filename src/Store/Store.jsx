@@ -1,14 +1,14 @@
-// Import configureStore from Redux Toolkit
 import { configureStore } from "@reduxjs/toolkit";
-// Import the reducer for the number slice
+// Import reducers from slices
 import numberSliceReducer from "./Reducers/numberSlice";
+import laptopSliceReducer from "./Reducers/laptopslice";
 
-// Configure the Redux store
 const store = configureStore({
   reducer: {
-    numberSlice: numberSliceReducer, // Register the slice reducer
+    // Register reducers with the store
+    numberSlice: numberSliceReducer,
+    laptopSlice: laptopSliceReducer,
   },
 });
 
-// Export the store
 export default store;
