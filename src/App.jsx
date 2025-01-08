@@ -1,45 +1,32 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectLaptop } from "./Store/Reducer/laptopSlice";
-import { selectCart, addToCart } from "./Store/Reducer/cartSlice";
+import { getPost, selectAllPosts } from "./Store/Reducer/postSlice";
 
 const App = () => {
-  // Retrieve the list of laptops from Redux store
-  const laptops = useSelector(selectLaptop);
+  // Use Redux's useSelector to get the entire posts object from the store
+  const postObj = useSelector(selectAllPosts);
 
-  // Retrieve the cart items from Redux store
-  const cart = useSelector(selectCart);
-
-  // Get the dispatch function to dispatch actions
+  // Use dispatch to trigger actions (like the async thunk getPost)
   const dispatch = useDispatch();
 
-  // Calculate total price and total cart count dynamically
-  let total = 0;
-  let cartCount = 0;
-  cart.forEach((element) => {
-    total = total + element.count * element.price; // Calculate total price
-    cartCount = cartCount + element.count; // Count total items
-  });
+  // Log the posts object to track state changes
+  console.log(postObj);
 
   return (
     <div>
-      {/* Section for displaying available laptops */}
-      <h1>Available Laptops</h1>
-      {laptops.map(({ id, ram, price, cpu }) => (
-        <p key={id}>
-          Price: {price} | CPU: {cpu} | RAM: {ram}{" "}
-          {/* Add laptop to the cart on button click */}
-          <button onClick={() => dispatch(addToCart({ id, price, ram, cpu }))}>
-            Add to Cart
-          </button>
-        </p>
-      ))}
+      {/* Display loading or completed status based on the state */}
+      {(postObj.loading === "pending" && <p>Loading......</p>) ||
+        (postObj.loading === "completed" && <p>Fetch completed....</p>)}
+
+      {/* Button to dispatch the getPost action to fetch data */}
+      <button onClick={() => dispatch(getPost())}>Get Post</button>
 
       <hr />
 
-      {/* Section for displaying cart summary */}
-      <h1>Cart</h1>
-      <p>Items in Cart: {cartCount}</p>
-      <p>Total Price: RS. {total}</p>
+      {/* Section to display all fetched posts */}
+      <h1>All Posts</h1>
+      {postObj.data.map((post) => (
+        <p key={post.id}>{post.title}</p>
+      ))}
     </div>
   );
 };

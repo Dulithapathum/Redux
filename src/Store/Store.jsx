@@ -1,12 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import cartSliceReducer from "./Reducer/cartSlice";
-import laptopSliceReducer from "./Reducer/laptopSlice";
+import postSliceReducer from "./Reducer/postSlice";
 
-// Configure and combine reducers for the store
+// Create and configure the Redux store
 const store = configureStore({
   reducer: {
-    cart: cartSliceReducer, // Reducer for cart
-    laptop: laptopSliceReducer, // Reducer for laptops
+    post: postSliceReducer, // Connect the post reducer to the store
   },
 });
 
