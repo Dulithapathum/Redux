@@ -1,32 +1,30 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getPost, selectAllPosts } from "./Store/Reducer/postSlice";
+import {
+  decrement,
+  increment,
+  selectNumber,
+} from "./Store/Reducer/numberReducer";
 
 const App = () => {
-  // Use Redux's useSelector to get the entire posts object from the store
-  const postObj = useSelector(selectAllPosts);
+  // Get the current state (number value) from the Redux store
+  const user = useSelector(selectNumber);
 
-  // Use dispatch to trigger actions (like the async thunk getPost)
+  // Use the dispatch function to trigger Redux actions
   const dispatch = useDispatch();
-
-  // Log the posts object to track state changes
-  console.log(postObj);
 
   return (
     <div>
-      {/* Display loading or completed status based on the state */}
-      {(postObj.loading === "pending" && <p>Loading......</p>) ||
-        (postObj.loading === "completed" && <p>Fetch completed....</p>)}
-
-      {/* Button to dispatch the getPost action to fetch data */}
-      <button onClick={() => dispatch(getPost())}>Get Post</button>
-
+      {/* Display the current number */}
+      {user.number}
       <hr />
-
-      {/* Section to display all fetched posts */}
-      <h1>All Posts</h1>
-      {postObj.data.map((post) => (
-        <p key={post.id}>{post.title}</p>
-      ))}
+      {/* Button to trigger the increment action */}
+      <button onClick={() => dispatch(increment("dulitha", 1, "mathara"))}>
+        Increment
+      </button>
+      {/* Button to trigger the decrement action */}
+      <button onClick={() => dispatch(decrement("dulitha", 1, "mathara"))}>
+        Decrement
+      </button>
     </div>
   );
 };
